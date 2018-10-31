@@ -18,6 +18,7 @@ Then pass them to the template_file's vars section in api.tf file like the "conf
 Then modify the app-config.sh.tpl
 
 
+Modify the health check in 'aws_alb_target_group' section suitable to your api.
 
 
 
