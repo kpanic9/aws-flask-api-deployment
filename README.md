@@ -8,3 +8,6 @@ Deployment Architecture
 
 			
 			
+Note: 
+
+Go through the variables.tf and configure the module assigning suitable values to the variables.
