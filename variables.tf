@@ -58,5 +58,7 @@ variable "key_pair" {
 	default = "test"
 }
 
-
-
+variable "vpc_id" {
+	type = "string"
+	default = "vpc-0bab28ad58ae848cf"
+}
