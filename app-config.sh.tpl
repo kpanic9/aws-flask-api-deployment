@@ -41,3 +41,26 @@ EOF
 
 deactivate
 
+chmod -R 750 /home/ec2-user/
+chown -R ec2-user:nginx /home/ec2-user/
+
+cat > /etc/systemd/system/api.service << EOF
+[Unit]
+Description=SNOW API
+After=network.target	
+
+[Service]
+User=ec2-user
+Group=nginx
+WorkingDirectory=/home/ec2-user/${api_dir}
+Environment="PATH=/home/ec2-user/venv/bin"
+ExecStart=/home/ec2-user/venv/bin/gunicorn --workers 3 --bind unix:app.sock -m 007 wsgi:app
+		
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable api 
+systemctl start api
+
