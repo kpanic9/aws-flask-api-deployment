@@ -64,3 +64,55 @@ resource "aws_autoscaling_group" "api_autoscaling_group" {
 	
 }
 
+resource "aws_autoscaling_policy" "scale-up" {
+	name = "node-cpu-scale-up"
+	autoscaling_group_name = "${aws_autoscaling_group.api_autoscaling_group.name}"
+	adjustment_type = "ChangeInCapacity"
+	scaling_adjustment = "1"
+	cooldown = "300"
+	policy_type = "SimpleScaling"
+}
+
+resource "aws_cloudwatch_metric_alarm" "scale-up" {
+	alarm_name = "scale-up"
+	alarm_description = "cpu-scale-up"
+	comparison_operator = "GreaterThanOrEqualToThreshold"
+	evaluation_periods = "2"
+	metric_name = "CPUUtilization"
+	namespace = "AWS/EC2"
+	period = "120"
+	statistic = "Average"
+	threshold = "60"
+	dimensions = {
+		"AutoScalingGroupName" = "${aws_autoscaling_group.api_autoscaling_group.name}"
+	}
+	actions_enabled = true
+	alarm_actions = ["${aws_autoscaling_policy.scale-up.arn}"]
+}
+
+resource "aws_autoscaling_policy" "scale-down" {
+	name = "scale-down"
+	autoscaling_group_name = "${aws_autoscaling_group.api_autoscaling_group.name}"
+	adjustment_type = "ChangeInCapacity"
+	scaling_adjustment = "-1"
+	cooldown = "300"
+	policy_type = "SimpleScaling"
+}
+
+resource "aws_cloudwatch_metric_alarm" "scale-down" {
+	alarm_name = "node-cpu-scale-down"
+	alarm_description = "cpu-scale-down"
+	comparison_operator = "LessThanOrEqualToThreshold"
+	evaluation_periods = "2"
+	metric_name = "CPUUtilization"
+	namespace = "AWS/EC2"
+	period = "120"
+	statistic = "Average"
+	threshold = "60"
+	dimensions = {
+		"AutoScalingGroupName" = "${aws_autoscaling_group.api_autoscaling_group.name}"
+	}
+	actions_enabled = true
+	alarm_actions = ["${aws_autoscaling_policy.scale-down.arn}"]
+}
+
