@@ -61,7 +61,6 @@ resource "aws_autoscaling_group" "api_autoscaling_group" {
 		value = "api"
 		propagate_at_launch = true
 	}
-	
 }
 
 resource "aws_autoscaling_policy" "scale-up" {
@@ -136,5 +135,32 @@ resource "aws_security_group" "alb_sg" {
 		protocol = "-1"
 		cidr_blocks = ["0.0.0.0/0"]
 	}
+}
 
+# api node security group
+resource "aws_security_group" "node_sg" {
+	name = "node security group"
+	description = "ALB security group"
+	vpc_id = "${var.vpc_id}"
+	
+	ingress {
+		from_port = 80
+		to_port = 80
+		protocol = "tcp"
+		security_groups = ["${aws_security_group.alb_sg.id}"]
+	}
+	
+	ingress {
+		from_port = 22
+		to_port = 22
+		protocol = "tcp"
+		cidr_blocks = ["0.0.0.0/0"]
+	}
+	
+	egress {
+		from_port = 0
+		to_port = 0
+		protocol = "-1"
+		cidr_blocks = ["0.0.0.0/0"]
+	}
 }
