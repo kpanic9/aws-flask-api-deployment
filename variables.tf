@@ -25,27 +25,27 @@ variable "config" {
 
 variable "private_subnet_1" {
 	type = "string"
-	default = "subnet-0ada1a79ff65969ad"
+	default = ""
 }
 
 variable "private_subnet_2" {
 	type = "string"
-	default = "subnet-03f5581803dd0663d"
+	default = ""
 }
 
 variable "public_subnet_1" {
 	type = "string"
-	default = "subnet-0e01336213c9a67b4"
+	default = ""
 }
 
 variable "public_subnet_2" {
 	type = "string"
-	default = "subnet-0b9d077bb38fc4659"
+	default = ""
 }
 
 variable "ami" {
 	type = "string"
-	default = "ami-0782017a917e973e7"
+	default = ""
 }
 
 variable "node_type" {
@@ -60,5 +60,5 @@ variable "key_pair" {
 
 variable "vpc_id" {
 	type = "string"
-	default = "vpc-0bab28ad58ae848cf"
+	default = ""
 }
