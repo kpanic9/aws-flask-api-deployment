@@ -8,7 +8,7 @@ data "template_file" "api_node" {
 	vars {
 		git_user = "${var.git_user}"
 		git_password = "${var.git_password}"
-		git_url = "${git_url}"
+		git_url = "${var.git_url}"
 		config = "${var.config}"
 		api_dir = "${var.api_dir}"
 	}
@@ -115,6 +115,25 @@ resource "aws_cloudwatch_metric_alarm" "scale-down" {
 	alarm_actions = ["${aws_autoscaling_policy.scale-down.arn}"]
 }
 
+# configuring the alb and listner
+resource "aws_alb_listener" "api" {
+	load_balancer_arn = "${aws_alb.api.arn}"
+	port = "80"
+	protocol = "HTTP"
+	
+	default_action {
+		target_group_arn = "${aws_alb_target_group.api.arn}"
+		type = "forward"
+	}
+}
+
+resource "aws_alb" "api" {
+	name = "api-alb"
+	internal = true
+	load_balancer_type = "application"
+	security_groups = ["${aws_security_group.alb_sg.id}"]
+	subnets = ["${var.public_subnet_1}", "${var.public_subnet_2}"]
+}
 
 # alb security group
 resource "aws_security_group" "alb_sg" {
